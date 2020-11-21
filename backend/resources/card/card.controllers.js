@@ -18,7 +18,6 @@ const getCardById = async (req, res) => {
 const getCards = async (req, res) => {
   try {
     const cards = await Card.find({});
-    console.log(cards);
     if (!cards) {
       res
         .status(404)
@@ -31,4 +30,15 @@ const getCards = async (req, res) => {
   }
 };
 
-module.exports = { getCardById, getCards };
+const createCard = async (req, res) => {
+  try {
+    const newCard = new Card({ description: req.body.description });
+    await newCard.save();
+    res.status(200).json({ message: 'card created' });
+  } catch (err) {
+    console.error(err);
+    res.status(400).end();
+  }
+};
+
+module.exports = { getCardById, getCards, createCard };
