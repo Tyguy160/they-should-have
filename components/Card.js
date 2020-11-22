@@ -6,7 +6,7 @@ import { useState } from 'react';
 export default function Card({ date, children, handleClick, id, hearts }) {
   const [love, setLove] = useState(false);
   return (
-    <div className="h-full max-w-xs px-5 m-5 border rounded-lg shadow-lg">
+    <div className="h-full max-w-xs px-5 m-5 border rounded-lg shadow-lg w-72">
       <p className="pt-5 text-xl leading-7 tracking-wide">{children}</p>
       <div className="flex flex-row items-center justify-between py-5 flex-nowrap">
         <p className="mr-5 font-light">
