@@ -46,7 +46,7 @@ export default function Home() {
     console.log(toggle);
     return fetch('https://they-should-have.herokuapp.com/api/card/heart', {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
+      mode: 'no-cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
@@ -65,7 +65,7 @@ export default function Home() {
       `https://they-should-have.herokuapp.com/api/card?sortBy=${sortBy}&search=${search}`,
       {
         method: 'GET',
-        mode: 'cors', // no-cors, *cors, same-origin
+        mode: 'no-cors', // no-cors, *cors, same-origin
         // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'same-origin', // include, *same-origin, omit
         headers: {
@@ -100,7 +100,7 @@ export default function Home() {
   ] = useMutation(() =>
     fetch(`https://they-should-have.herokuapp.com/api/card`, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
+      mode: 'no-cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
       credentials: 'same-origin', // include, *same-origin, omit
       headers: {
