@@ -27,7 +27,7 @@ export default function Card({ date, children, handleClick, id, hearts }) {
               setLove(!love);
             }}>
             <p className="p-1">{hearts}</p>
-            <Heart love={love}></Heart>
+            <Heart className="" love={love}></Heart>
           </button>
         </div>
       </div>

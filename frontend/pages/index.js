@@ -42,10 +42,6 @@ export default function Home() {
     }
   }
 
-  useEffect(() => {
-    // console.log(sortBy);
-  });
-
   function updateHearts(id, toggle) {
     console.log(toggle);
     return fetch('http://localhost:4000/api/card/heart', {
