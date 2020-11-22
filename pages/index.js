@@ -44,7 +44,7 @@ export default function Home() {
 
   function updateHearts(id, toggle) {
     console.log(toggle);
-    return fetch('http://localhost:4000/api/card/heart', {
+    return fetch('https://they-should-have.herokuapp.com/api/card/heart', {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -62,7 +62,7 @@ export default function Home() {
   function getCardData() {
     console.log(search);
     return fetch(
-      `http://localhost:4000/api/card?sortBy=${sortBy}&search=${search}`,
+      `https://they-should-have.herokuapp.com/api/card?sortBy=${sortBy}&search=${search}`,
       {
         method: 'GET',
         mode: 'cors', // no-cors, *cors, same-origin
@@ -98,7 +98,7 @@ export default function Home() {
       reset,
     },
   ] = useMutation(() =>
-    fetch(`http://localhost:4000/api/card`, {
+    fetch(`https://they-should-have.herokuapp.com/api/card`, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
