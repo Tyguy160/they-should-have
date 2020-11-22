@@ -13,6 +13,8 @@
     "postcss": "^8.1.8",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-query": "^2.26.3",
+    "react-query-devtools": "^2.6.3",
     "tailwindcss": "^2.0.1"
   }
 }

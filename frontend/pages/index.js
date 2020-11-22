@@ -1,8 +1,122 @@
 import Head from 'next/head';
-
 import Card from '../components/Card';
 
+import { useState, useEffect } from 'react';
+
+import {
+  useQuery,
+  useMutation,
+  QueryCache,
+  ReactQueryCacheProvider,
+  queryCache,
+} from 'react-query';
+
 export default function Home() {
+  async function handleSubmit(e) {
+    e.preventDefault();
+    try {
+      await createCard({ newCard });
+      setNewCard('');
+      await queryCache.refetchQueries('cardData');
+    } catch (err) {
+      console.err(err);
+    }
+  }
+
+  async function handleChange(e) {
+    e.preventDefault();
+    try {
+      await setSortBy(e.target.value);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function handleClick(e, id, toggle) {
+    try {
+      console.log(`You toggled ${id} to ${toggle}`);
+      await updateHearts(id, toggle);
+      await queryCache.refetchQueries('cardData');
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(() => {
+    // console.log(sortBy);
+  });
+
+  function updateHearts(id, toggle) {
+    console.log(toggle);
+    return fetch('http://localhost:4000/api/card/heart', {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify({ id, toggle }),
+    }).then((res) => res.json());
+  }
+
+  function getCardData() {
+    console.log(search);
+    return fetch(
+      `http://localhost:4000/api/card?sortBy=${sortBy}&search=${search}`,
+      {
+        method: 'GET',
+        mode: 'cors', // no-cors, *cors, same-origin
+        // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      }
+    ).then((res) => res.json());
+  }
+
+  const [newCard, setNewCard] = useState('');
+  const [sortBy, setSortBy] = useState('newest');
+  const [search, setSearch] = useState('');
+  const cards = useQuery(['cardData'], () => getCardData());
+  const [favoriteCard, ,] = useMutation((id, toggle) =>
+    updateHearts(id, toggle)
+  );
+
+  const [
+    createCard,
+    {
+      status,
+      isIdle,
+      isLoading: mutationLoading,
+      isSuccess,
+      isError,
+      error: mutationError,
+      reset,
+    },
+  ] = useMutation(() =>
+    fetch(`http://localhost:4000/api/card`, {
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify({ description: newCard }),
+    }).then((res) => res.json())
+  );
+
   return (
     <div className="flex flex-col min-h-screen">
       <Head>
@@ -12,62 +126,55 @@ export default function Home() {
 
       <div className="flex-grow">
         <div className="flex flex-col justify-center">
-          <div className="flex flex-row flex-wrap items-center justify-center px-10 py-20 text-center border-b border-gray-300">
+          <form
+            onSubmit={(e) => handleSubmit(e)}
+            className="flex flex-row flex-wrap items-center justify-center px-10 py-20 text-center border-b border-gray-300">
             <h1 className="p-5 py-6 text-5xl font-thin text-gray-700 ">
               They should have...
             </h1>
-            <input className="h-full max-w-full p-5 text-5xl font-thin text-gray-700 border border-gray-300 rounded-lg focus:outline-none "></input>
-            <button className="h-full px-5 py-3 m-10 text-2xl font-thin bg-gray-300 border-gray-500 rounded">
+            <input
+              className="h-full max-w-full p-5 text-5xl font-thin text-gray-700 border border-gray-300 rounded-lg focus:outline-none"
+              onChange={(e) => setNewCard(e.target.value)}
+              value={newCard}></input>
+            <button
+              className="h-full px-5 py-3 m-10 text-2xl font-thin bg-gray-300 border-gray-500 rounded"
+              type="submit">
               Submit
             </button>
-          </div>
+          </form>
         </div>
         <div className="flex flex-col">
           {/* Menu */}
-          <div className="flex flex-row flex-wrap justify-center ">
-            <select className="p-2 my-5 text-2xl font-light border border-gray-400 rounded focus:outline-none">
-              <option>Newest</option>
-              <option>Oldest</option>
-              <option>Most Popular</option>
+          {/* <div className="flex flex-row flex-wrap justify-center ">
+            <select
+              value={sortBy}
+              onChange={(e) => handleChange(e)}
+              className="p-2 my-5 text-2xl font-light border border-gray-400 rounded focus:outline-none">
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
+              <option value="popularity">Most Popular</option>
             </select>
             <input
+              value={search}
+              onChange={async (e) => {
+                setSearch(e.target.value);
+              }}
               placeholder="Search..."
               className="h-full p-2 mx-2 text-2xl font-light border border-gray-400 rounded lg:my-5 focus:outline-none "></input>
-          </div>
+          </div> */}
           {/* Badges */}
           <div className="flex flex-row flex-wrap justify-center">
-            <Card>
-              Dolor commodo est consectetur eiusmod quis est eiusmod do quis in
-              sit ea adipisicing.
-            </Card>
-            <Card>Deserunt consequat anim exercitation do velit est quis.</Card>
-            <Card>Nulla deserunt laboris aliqua amet aliquip elit.</Card>
-            <Card>
-              Non exercitation reprehenderit aute ut velit consequat occaecat
-              dolor ea anim.
-            </Card>
-            <Card>
-              Quis aute magna commodo nulla do duis duis incididunt aliqua culpa
-              adipisicing duis cillum exercitation.
-            </Card>
-            <Card>Quis elit elit ullamco nostrud exercitation.</Card>
-            <Card>
-              Incididunt et ipsum cillum Lorem consequat enim do occaecat eu
-              pariatur qui sunt in amet.
-            </Card>
-            <Card>Nostrud sit eiusmod et id incididunt officia.</Card>
-            <Card>
-              Esse pariatur proident duis deserunt eu cillum proident et tempor
-              ad fugiat sint fugiat.
-            </Card>
-            <Card>
-              Nisi nostrud dolor amet aliqua sunt est eu ad et in ad eu
-              consectetur.
-            </Card>
-            <Card>
-              Lorem nulla in deserunt esse deserunt deserunt ullamco consectetur
-              eu magna proident.
-            </Card>
+            {cards.data &&
+              cards.data.map((card) => (
+                <Card
+                  key={card._id}
+                  date={card.date}
+                  handleClick={handleClick}
+                  id={card._id}
+                  hearts={card.hearts}>
+                  {card.description}
+                </Card>
+              ))}
           </div>
         </div>
       </div>

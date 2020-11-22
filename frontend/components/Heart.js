@@ -1,4 +1,4 @@
-export default function Heart({ className }) {
+export default function Heart({ className, love }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -7,8 +7,8 @@ export default function Heart({ className }) {
       height="25"
       viewBox="0 0 24 24"
       strokeWidth="2"
-      stroke="#2c3e50"
-      fill="none"
+      stroke={love ? '#8B5CF6' : '#2c3e50'}
+      fill={love ? '#8B5CF6' : 'none'}
       strokeLinecap="round"
       strokeLinejoin="round">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
